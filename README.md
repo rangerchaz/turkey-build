@@ -8,7 +8,7 @@ Not built for speed. Built for reliable, well-built code (hopefully).
 
 ## Requirements
 
-- **Claude Max or Pro subscription** (recommended) - This skill is a token burner. A full build spawns 10-15+ agents, each reading reference docs, writing code, and running verification. Expect 100k-500k+ tokens per build.
+- **Claude Max or Pro subscription** (recommended) - This skill uses significant tokens. A full build spawns multiple agents, each reading reference docs, writing code, and running verification.
 - **Claude Code** (CLI) or compatible AI coding assistant
 - **aimem MCP server** (optional but recommended) - Enables cross-project learning and agent memory coordination
 
