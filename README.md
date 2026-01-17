@@ -48,6 +48,8 @@ Conductor (98/100 gate)
 merge develop → main → v1.0.0
 ```
 
+**Quick Start:** `/turkey-build build me a todo app with add, complete, and delete`
+
 Feature branches. Multiple agents per feature. Bugfixes in bugfix branches. Clean git history.
 
 ## Seven Modes
