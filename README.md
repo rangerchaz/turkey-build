@@ -10,7 +10,7 @@ Not built for speed. Built for reliable, well-built code (hopefully).
 
 - **Claude Max or Pro subscription** (recommended) - This skill uses significant tokens. A full build spawns multiple agents, each reading reference docs, writing code, and running verification.
 - **Claude Code** (CLI) or compatible AI coding assistant
-- **aimem MCP server** (optional but recommended) - Enables cross-project learning and agent memory coordination
+- **aimem MCP server** (optional but recommended) - Enables cross-project learning and agent memory coordination. Install: `npm install -g @rangerchaz/aimem`
 
 ## How It Works
 
@@ -216,7 +216,10 @@ git clone https://github.com/rangerchaz/turkey-build.git ~/.claude/skills/turkey
 ```
 
 ### With aimem (recommended)
-Configure aimem MCP server in your Claude Code settings for cross-project learning.
+```bash
+npm install -g @rangerchaz/aimem
+```
+Then configure aimem MCP server in your Claude Code settings for cross-project learning.
 
 ## Usage
 
