@@ -1,108 +1,183 @@
-# Auto App Builder
+# Turkey Build
 
 **Build like a team, not a hackathon.**
 
 PM scopes features, creates branches, assigns agents. Multiple agents collaborate on each feature. Same workflow for greenfield and iteration.
 
-Not built for speed. Built for reliable, well-built code.
+Not built for speed. Built for reliable, well-built code (hopefully).
+
+## Requirements
+
+- **Claude Code** (CLI) or compatible AI coding assistant
+- **aimem MCP server** (optional but recommended) - Enables cross-project learning and agent memory coordination
 
 ## How It Works
 
 ```
-🦃 PM Agent → scope.yaml with features
+PM Agent → scope.yaml with features
       ↓
 ┌─────────────────────────────────────┐
-│  🦃 feature/core-storage            │
+│  feature/core-storage               │
 │  Backend agent                      │
 └─────────────────────────────────────┘
       ↓ merge to develop
 ┌─────────────────────────────────────┐
-│  🦃 feature/api-server              │
+│  feature/api-server                 │
 │  Backend + DevOps agents            │
 └─────────────────────────────────────┘
       ↓ merge to develop
 ┌─────────────────────────────────────┐
-│  🦃 feature/web-dashboard           │
+│  feature/web-dashboard              │
 │  Designer + Frontend agents         │
 └─────────────────────────────────────┘
       ↓ merge to develop
 
-🦃 Review Wave: QA + Security + CodeReview + Perf
+Review Wave: QA + Security + CodeReview + Performance
       ↓
-🦃 Runtime Verification (failures → bugfix/*)
+Runtime Verification (failures → bugfix/*)
       ↓
-🦃 Conductor (98/100 gate)
+Data Flow Verification (schema sync, no placeholders)
       ↓
-🦃🦃🦃 merge develop → main → v1.0.0
+E2E Browser Testing (Playwright, 3 viewports)
+      ↓
+Visual QA (Claude vision screenshot analysis)
+      ↓
+Conductor (98/100 gate)
+      ↓
+merge develop → main → v1.0.0
 ```
 
 Feature branches. Multiple agents per feature. Bugfixes in bugfix branches. Clean git history.
 
-## Two Modes
+## Seven Modes
 
-### Greenfield
+### Greenfield (New Build)
 ```
 "Build a clipboard history manager"
 → PM scopes 5 features → Builds each → Ships v1.0.0
 ```
 
-### Iteration  
+### Iteration (Add Features)
 ```
 "Add date filtering and export"
 → PM reads existing code → Scopes 2 features → Ships v1.1.0
 ```
 
-Same workflow. PM just scopes fewer features for iteration.
+### Bugfix (Fix Issues)
+```
+"Cards not showing in battle view"
+→ PM creates bugfix branch → Trace → Fix → Verify
+```
+
+### Refactor (Restructure Code)
+```
+"Clean up the auth code" / "Split the god file"
+→ Analyze → Plan → Restructure → Verify behavior unchanged
+```
+
+### UI Polish (Visual Cleanup)
+```
+"Make the UI look better" / "Fix the messy CSS"
+→ Visual QA scan → Designer review → CSS cleanup → Responsive fixes
+```
+
+### Migration (Upgrade Dependencies)
+```
+"Upgrade to React 19" / "Move from Express to Hono"
+→ Audit → Plan migration → Update incrementally → Test each step
+```
+
+### Audit (Analysis Only)
+```
+"Review security" / "Check performance" / "Analyze code quality"
+→ Run relevant agents → Produce report → No code changes unless requested
+```
 
 ## The Agents
 
 | Agent | Role |
 |-------|------|
 | **PM** | Orchestrator - scopes features, assigns agents |
-| Designer | Design tokens, component specs |
+| Discovery | Requirements → scope.yaml |
+| Designer | Design tokens, semantic registry, component specs |
 | Backend | API, database, business logic |
-| Frontend | UI components |
+| Frontend | UI components using semantic classes |
 | Docs | README, API docs, CLAUDE.md |
 | DevOps | Docker, CI/CD, deployment |
-| QA | Tests |
-| Security | Vulnerability scan |
+| QA | Unit/integration tests |
+| Security | Vulnerability scanning |
 | CodeReview | Quality analysis |
 | Performance | Optimization |
 | Demo | User perspective critique |
+| **E2E** | Playwright browser testing, screenshot capture |
+| **Visual QA** | Claude vision screenshot analysis |
+| **Data Flow** | Schema sync, placeholder detection |
+| **Bugfix** | Systematic debugging (reproduce → trace → isolate → fix → verify) |
 | Conductor | Quality gate (98/100 required) |
+
+## Learning System (aimem)
+
+When aimem MCP server is available, agents learn from past builds:
+
+- **Agent Patterns** - What worked/failed for each agent type
+- **Project History** - Outcomes and quality scores across projects
+- **Confidence Scoring** - Patterns rated 0-100 based on frequency and success
+- **False Memory Detection** - Contradictory patterns identified and demoted
+
+```yaml
+# Agents query before building
+"What design patterns worked for similar apps?"
+"What API issues were found in past projects?"
+
+# Agents record after building
+"This session detection approach scored 97%"
+"Schema mismatch was the main issue"
+```
+
+Fallback: Without aimem, agents work independently (no cross-project learning).
 
 ## Installation
 
 ### Claude Code
 ```bash
 mkdir -p ~/.claude/skills
-cp -r auto-app-builder ~/.claude/skills/
+git clone https://github.com/rangerchaz/turkey-build.git ~/.claude/skills/turkey-build
 ```
 
-### Cursor
-```bash
-mkdir -p ~/.cursor/skills
-cp -r auto-app-builder ~/.cursor/skills/
-```
+### With aimem (recommended)
+Configure aimem MCP server in your Claude Code settings for cross-project learning.
 
 ## Usage
 
 ```
-Use the auto-app-builder skill to build a clipboard history manager
+/turkey-build build a clipboard history manager
 
-Use the auto-app-builder skill to add search filters to the existing app
+/turkey-build add search filters to the existing app
+
+/turkey-build fix the bug where cards don't display
 ```
 
 ## What You Get
 
-After 40-60 minutes:
-
-- **Working application** (runtime verified)
-- **Full test suite** (50+ tests typical)
+- **Working application** (runtime verified, E2E tested)
+- **Full test suite** (unit + E2E, 50-150+ tests typical)
+- **Visual QA** (screenshots at 3 viewports)
 - **Security review**
 - **Docker + CI/CD**
 - **Documentation**
 - **Clean git history** with feature branches
+
+## Quality Gate
+
+| Dimension | Weight |
+|-----------|--------|
+| Functionality | 25% |
+| Code Quality | 25% |
+| Test Coverage | 20% |
+| Design System | 15% |
+| Documentation | 15% |
+
+**98% required.** Failures → bugfix branches → re-score.
 
 ## Git Flow
 
@@ -115,7 +190,7 @@ main (releases only)
         ├── feature/dashboard ──────► merge
         ├── feature/search ─────────► merge
         │
-        │   (runtime fails)
+        │   (runtime/e2e fails)
         ├── bugfix/null-response ───► merge
         │
         │   (conductor approved)
@@ -123,80 +198,36 @@ main (releases only)
                                       tag v1.0.0
 ```
 
-## Quality Gate
-
-| Category | Points |
-|----------|--------|
-| Functionality | 25 |
-| Code Quality | 20 |
-| Security | 20 |
-| Testing | 15 |
-| Documentation | 10 |
-| Performance | 10 |
-
-**98/100 required.** Failures → bugfix branches → re-score.
-
-## Example Build
-
-```
-🦃 Building: Clipboard History Manager
-   "Let's talk turkey."
-
-[6:09 PM] 🦃 PM scopes 5 features
-[6:12 PM] 🦃 feature/core-daemon (Backend) → merged ✓
-[6:18 PM] 🦃 feature/storage-layer (Backend) → merged ✓
-[6:25 PM] 🦃 feature/api-server (Backend, DevOps) → merged ✓
-[6:38 PM] 🦃 feature/web-dashboard (Designer, Frontend) → merged ✓
-[6:42 PM] 🦃 feature/documentation (Docs) → merged ✓
-          "The nest is built."
-[6:55 PM] 🦃 Review Wave complete ✓
-          "Green across the board. Gobble approved."
-[7:00 PM] 🦃 Runtime verification: ALL PASS ✓
-          "Not a cold turkey - this one runs hot!"
-[7:05 PM] 🦃 Conductor: 98/100 ✓
-          "This turkey is fully baked."
-[7:07 PM] 🦃🦃🦃 v1.0.0 tagged
-          "Gobble gobble - dinner is served!"
-
-📁 Delivered:
-  src/         Application code
-  tests/       55 automated tests
-  public/      Dark-themed dashboard
-  Dockerfile   Ready to deploy
-```
-
-## Example Iteration
-
-```
-🦃 Adding features to: Clipboard History Manager
-
-[7:30 PM] 🦃 PM reads existing code
-[7:32 PM] 🦃 PM scopes 2 new features
-[7:35 PM] 🦃 feature/date-filter (Backend, Frontend) → merged ✓
-[7:42 PM] 🦃 feature/export-json (Backend, Frontend) → merged ✓
-[7:48 PM] 🦃 Review Wave (light) ✓
-[7:52 PM] 🦃 Runtime verification: ALL PASS ✓
-[7:55 PM] 🦃 Conductor: 98/100 ✓
-[7:57 PM] 🦃🦃🦃 v1.1.0 tagged
-
-📁 Changes:
-  src/server.js   +45 lines (filter params, export endpoint)
-  public/app.js   +120 lines (filter UI, export button)
-  tests/          +12 new tests (67 total)
-```
-
 ## Files
 
 ```
-auto-app-builder/
-├── SKILL.md              # Entry point
-├── README.md             # This file
-├── LICENSE               # MIT
+turkey-build/
+├── SKILL.md                    # Entry point
+├── README.md                   # This file
+├── LICENSE                     # MIT
 └── references/
-    ├── ORCHESTRATION.md  # Execution flow
-    ├── PM-AGENT.md       # Orchestrator spec (includes turkey humor)
-    ├── *-AGENT.md        # Agent specifications
-    ├── QA-SCORING.md     # 100-point rubric
+    ├── ORCHESTRATION.md        # Execution flow
+    ├── PM-AGENT.md             # Orchestrator spec
+    ├── AIMEM-INTEGRATION.md    # Memory coordination
+    ├── MEMORY-COORDINATION.md  # Team memory system
+    ├── LEARNING-SYSTEM.md      # Cross-project learning
+    ├── DISCOVERY-AGENT.md
+    ├── DESIGNER-AGENT.md
+    ├── BACKEND-AGENT.md
+    ├── FRONTEND-AGENT.md
+    ├── QA-AGENT.md
+    ├── DEVOPS-AGENT.md
+    ├── SECURITY-AGENT.md
+    ├── CODE-REVIEW-AGENT.md
+    ├── PERFORMANCE-AGENT.md
+    ├── DEMO-AGENT.md
+    ├── DOCS-AGENT.md
+    ├── E2E-AGENT.md            # Browser testing
+    ├── VISUAL-QA-AGENT.md      # Screenshot analysis
+    ├── DATA-FLOW-VERIFICATION.md
+    ├── BUGFIX-AGENT.md         # Systematic debugging
+    ├── CONDUCTOR-AGENT.md      # Quality gate
+    ├── QA-SCORING.md
     └── RUNTIME-VERIFICATION.md
 ```
 
@@ -206,4 +237,4 @@ MIT
 
 ---
 
-Built by [Chad Cox](https://linkedin.com/in/chadcox) • [TurkeyCode.ai](https://turkeycode.ai)
+Built by [Chad Cox](https://linkedin.com/in/chadcox1) • [TurkeyCode.ai](https://turkeycode.ai)
