@@ -8,6 +8,7 @@ Not built for speed. Built for reliable, well-built code (hopefully).
 
 ## Requirements
 
+- **Claude Max or Pro subscription** (recommended) - This skill is a token burner. A full build spawns 10-15+ agents, each reading reference docs, writing code, and running verification. Expect 100k-500k+ tokens per build.
 - **Claude Code** (CLI) or compatible AI coding assistant
 - **aimem MCP server** (optional but recommended) - Enables cross-project learning and agent memory coordination
 
@@ -117,24 +118,92 @@ Feature branches. Multiple agents per feature. Bugfixes in bugfix branches. Clea
 
 ## Learning System (aimem)
 
-When aimem MCP server is available, agents learn from past builds:
+When aimem MCP server is available, agents learn from past builds and get smarter over time.
 
-- **Agent Patterns** - What worked/failed for each agent type
-- **Project History** - Outcomes and quality scores across projects
-- **Confidence Scoring** - Patterns rated 0-100 based on frequency and success
-- **False Memory Detection** - Contradictory patterns identified and demoted
+### What Gets Learned
 
-```yaml
-# Agents query before building
-"What design patterns worked for similar apps?"
-"What API issues were found in past projects?"
+| Data Type | Purpose | Example |
+|-----------|---------|---------|
+| **Agent Patterns** | Per-agent success/failure patterns | "Session detection works better with heartbeat.timestamp" |
+| **Project History** | Outcomes and quality scores | "Project X scored 97% with 1 iteration" |
+| **Conductor Patterns** | Success rates by pattern type | "Dark themes fail 20% due to contrast issues" |
+| **Vault Benchmarks** | Quality percentiles across all projects | p50: 92%, p75: 95%, p90: 98% |
 
-# Agents record after building
-"This session detection approach scored 97%"
-"Schema mismatch was the main issue"
+### Confidence Scoring
+
+Not all patterns are equal. Each pattern gets a confidence score (0-100):
+
+```
+Base score: 100
+- Frequency < 3 occurrences:  -20
+- Pattern older than 3 months: -15
+- Contains error indicators:   -30
+- Marked as false memory:      -50
 ```
 
-Fallback: Without aimem, agents work independently (no cross-project learning).
+Only patterns with confidence >= 50 are used in prompts.
+
+### False Memory Detection
+
+Agents can learn wrong things. The system detects and filters these:
+
+- **Contradictory patterns** - Same pattern with opposite outcomes gets flagged
+- **Error indicators** - Patterns containing "didn't work", "reverted", "broke" get demoted
+- **Low frequency** - Patterns seen only once are treated with skepticism
+
+### How Agents Use It
+
+**Before building:**
+```yaml
+# Designer queries for patterns
+"What design tokens worked for similar apps?"
+"What accessibility issues were found in past dark themes?"
+
+# Backend queries for approaches
+"What session detection implementation scored highest?"
+"What API patterns caused issues?"
+```
+
+**After building:**
+```yaml
+# Conductor records outcomes
+project: clipboard-manager
+quality_score: 97
+iterations: 1
+issues_found: ["semantic class mismatch"]
+fix_applied: "stricter class name validation"
+```
+
+### Key Structure
+
+All learning data stored with `turkeycode:learning:` namespace:
+
+```
+turkeycode:learning:
+├── agent_pattern:{agent}:{id}      # Per-agent patterns
+├── conductor_pattern:{key}         # Success/failure by pattern type
+├── project:{hash}                  # Project outcomes
+├── agent_performance:{agent}:{hash} # Per-project agent stats
+└── vault:
+    ├── benchmarks                  # Quality percentiles
+    └── failure_patterns            # Common failures
+```
+
+### Fallback Mode
+
+Without aimem, the system falls back to file-based storage:
+
+```
+.turkeycode/learning/
+├── agent_patterns/{agent}.yaml
+├── conductor_patterns.yaml
+├── projects/{hash}.yaml
+└── vault/
+    ├── benchmarks.yaml
+    └── failure_patterns.yaml
+```
+
+Agents work independently without cross-project learning, but still function.
 
 ## Installation
 
