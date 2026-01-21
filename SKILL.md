@@ -14,6 +14,31 @@ requires:
 
 # Turkey Build
 
+## ⚡ Quick Start (REQUIRED)
+
+**First time in a new project?** Two-step process:
+
+### Step 1: Bootstrap
+```bash
+/turkey-build
+# Creates: .claude/settings.local.json, git init, branches
+# Then tells you to restart
+```
+
+### Step 2: Restart & Build
+```bash
+# Exit Claude Code (Ctrl+C or /exit)
+claude
+/turkey-build
+# Now agents have permissions and will work!
+```
+
+**Why restart?** Permissions load when Claude Code starts, not mid-session.
+
+**If agents fail with "Permission denied"** → You skipped the restart. Exit and re-run `claude`.
+
+---
+
 ## STOP. READ THESE FILES FIRST.
 
 Before writing ANY code, you MUST read these files in order:
@@ -47,6 +72,13 @@ Say "build me X" → Get production-ready, runtime-verified code.
 ## Execution Flow
 
 ```
+🦃 BOOTSTRAP (runs first!)
+  - Create .claude/settings.local.json with agent permissions
+  - Initialize git, set user config
+  - Create main + develop branches
+  - Initial commit if empty
+         │
+         ▼
 PM Agent reads requirements (or existing code + request)
          │
          ▼

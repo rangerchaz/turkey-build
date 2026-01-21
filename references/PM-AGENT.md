@@ -11,13 +11,96 @@ The PM Agent is the orchestrator. It reads requirements (or existing code + new 
 
 ## Core Responsibilities
 
-1. **Scope Features** - Break requirements into discrete features
-2. **Create Branches** - `feature/*` for each feature
-3. **Assign Agents** - Which agents work on each feature
-4. **Sequence Dependencies** - What must complete before what
-5. **Coordinate Build** - Dispatch agents, merge features
-6. **Handle Failures** - Create `bugfix/*` branches for fixes
-7. **Deliver Release** - Merge to main, tag version
+1. **Bootstrap Project** - Set up permissions and git (NEW - runs first!)
+2. **Scope Features** - Break requirements into discrete features
+3. **Create Branches** - `feature/*` for each feature
+4. **Assign Agents** - Which agents work on each feature
+5. **Sequence Dependencies** - What must complete before what
+6. **Coordinate Build** - Dispatch agents, merge features
+7. **Handle Failures** - Create `bugfix/*` branches for fixes
+8. **Deliver Release** - Merge to main, tag version
+
+---
+
+## Bootstrap Phase (REQUIRED - Run First!)
+
+Before any agents can work, PM must set up the project environment. **This runs before Discovery.**
+
+### What Bootstrap Does
+
+```bash
+# 1. Create agent permissions file
+mkdir -p .claude
+cat > .claude/settings.local.json << 'EOF'
+{
+  "permissions": {
+    "allow": [
+      "Bash(git *)",
+      "Bash(mkdir *)",
+      "Bash(ls *)",
+      "Bash(pwd)",
+      "Bash(npm install*)",
+      "Bash(npm run *)",
+      "Bash(npx playwright*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)"
+    ]
+  }
+}
+EOF
+
+# 2. Initialize git (if not already)
+git init 2>/dev/null || true
+
+# 3. Set git user config (for commits)
+git config user.email "builder@turkeycode.ai"
+git config user.name "Turkey Builder"
+
+# 4. Create branch structure
+git checkout -b main 2>/dev/null || git checkout main
+git checkout -b develop 2>/dev/null || git checkout develop
+
+# 5. Initial commit (if empty repo)
+if [ -z "$(git log --oneline -1 2>/dev/null)" ]; then
+  echo "# Project" > README.md
+  git add .
+  git commit -m "chore: initial commit"
+fi
+```
+
+### Why This Matters
+
+Background agents need pre-approved permissions to use Bash, Write, Edit tools. Without this setup:
+- Agents hit "Permission denied" errors
+- No one is present to approve prompts
+- Build fails silently
+
+### Bootstrap Checklist
+
+- [ ] `.claude/settings.local.json` exists with agent permissions
+- [ ] Git initialized
+- [ ] Git user config set
+- [ ] `main` and `develop` branches exist
+- [ ] At least one commit exists
+- [ ] **Claude Code restarted** (permissions load at session start!)
+
+### ⚠️ IMPORTANT: Restart Required!
+
+**Permissions are loaded when Claude Code starts, not dynamically.**
+
+After bootstrap creates `.claude/settings.local.json`, you MUST:
+
+1. Tell the user: "Bootstrap complete. Please restart Claude Code for agent permissions to take effect."
+2. User exits Claude Code (`/exit` or Ctrl+C)
+3. User runs `claude` again in the same directory
+4. Run `/turkey-build` again - now agents will have permissions
+
+**If you skip the restart, agents will fail with "Permission denied".**
+
+**After restart, proceed to Discovery.**
+
+---
 
 ## Seven Modes
 
