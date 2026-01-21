@@ -4,7 +4,7 @@ description: Multi-agent app builder with 7 modes - greenfield, iteration, bugfi
 license: MIT
 metadata:
   author: turkeycode
-  version: "9.1.0"
+  version: "9.1.1"
   website: https://turkeycode.ai
 allowed-tools: Bash, Read, Write, Edit
 requires:
