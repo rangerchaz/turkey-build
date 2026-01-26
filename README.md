@@ -63,6 +63,7 @@ Same workflow. PM just scopes fewer features for iteration.
 | Backend | API, database, business logic |
 | Frontend | UI components |
 | Docs | README, API docs, CLAUDE.md |
+| Report | Status and analytics reports |
 | DevOps | Docker, CI/CD, deployment |
 | QA | Tests |
 | Security | Vulnerability scan |
