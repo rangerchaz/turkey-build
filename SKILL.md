@@ -205,6 +205,7 @@ Same workflow. PM routes to different agents based on task type.
 | Backend | `BACKEND-AGENT.md` | API, database, services |
 | Frontend | `FRONTEND-AGENT.md` | UI components |
 | Docs | `DOCS-AGENT.md` | README, API docs, CLAUDE.md |
+| Report | `REPORT-AGENT.md` | Status/analytics reports, stakeholder distribution |
 | DevOps | `DEVOPS-AGENT.md` | Docker, CI/CD |
 | QA | `QA-AGENT.md` | Unit/integration tests |
 | Security | `SECURITY-AGENT.md` | Vulnerability scanning |
@@ -285,6 +286,7 @@ auto-app-builder/
     ├── CODE-REVIEW-AGENT.md
     ├── PERFORMANCE-AGENT.md
     ├── DOCS-AGENT.md
+    ├── REPORT-AGENT.md
     ├── MEMORY-COORDINATION.md
     ├── QA-SCORING.md
     └── RUNTIME-VERIFICATION.md
